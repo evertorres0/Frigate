@@ -1,0 +1,39 @@
+mqtt:
+  enabled: false
+
+auth:
+  failed_login_rate_limit: 1/second;5/minute;10/hour
+
+record:
+  expire_interval: 60
+
+go2rtc:
+  streams:
+    driveway:
+      - rtsp://username:password@IP adress:554/cam/realmonitor?channel=1&subtype=0
+    driveway_sub:
+      - rtsp://username:password@Ip adress:554/cam/realmonitor?channel=1&subtype=1
+
+cameras:
+  driveway: # <------ Name the camera
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/driveway_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+        - path: rtsp://127.0.0.1:8554/driveway
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+      hwaccel_args: preset-vaapi
+    detect:
+      enabled: false  # <---- disable detection until you have a working camera feed
+      width: 704
+      height: 480
+    record:
+      enabled: true
+      retain:
+        days: 5
+        mode: all
